@@ -1,0 +1,45 @@
+- name: Prerequisites
+  apt:
+    update_cache: yes
+    pkg:
+      gpg
+  become: true
+
+- name: Download InfluxDB Repository key
+  get_url:
+    url: https://repos.influxdata.com/influxdb.key
+    dest: /tmp/influxdb.key
+
+- name: Install InfluxDB Repository key
+  command: gpg --output /etc/apt/trusted.gpg.d/influxdb.gpg --dearmor /tmp/influxdb.key
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdb.gpg
+  become: yes
+
+- name: Add InfluxDB repository
+  apt_repository:
+    repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.gpg] https://repos.influxdata.com/debian bullseye stable
+  become: yes
+
+- name: Install InfluxDB
+  apt:
+    update_cache: yes
+    pkg:
+      - influxdb2
+  become: yes
+
+- name: Start the InfluxDB service
+  service:
+    name: influxdb
+    state: started
+
+- name: Configure InfluxDB
+  command:
+    cmd: >
+      influx setup 
+        --username andrew
+        --password '{{ influxdb_password }}'
+        --bucket data 
+        --org home
+        --retention 0
+        --force
