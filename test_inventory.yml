@@ -1,6 +1,0 @@
-ha:
-  hosts:
-    ha_test:
-      ansible_connection: docker
-      remote_addr: ha_test
-      remote_user: root

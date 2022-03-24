@@ -1,0 +1,5 @@
+all:
+    hosts:
+        homeassistant:
+            ansible_host: homeassistant.lan
+            ansible_user: pi

@@ -31,7 +31,13 @@
 - name: Start the InfluxDB service
   service:
     name: influxdb
+    enabled: yes
     state: started
+  become: yes
+
+- name: Check for existing config
+  command: influx config list --json
+  register: influxdb_config
 
 - name: Configure InfluxDB
   command:
@@ -43,3 +49,4 @@
         --org home
         --retention 0
         --force
+  when: influxdb_config.stdout | from_json | length == 0

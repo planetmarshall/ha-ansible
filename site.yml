@@ -1,7 +1,8 @@
 ---
 - name: Setup Home Assistant Server
-  hosts: ha
+  hosts: homeassistant
 
   roles:
     - common
     - influx
+    - home_assistant
