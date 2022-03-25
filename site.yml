@@ -5,7 +5,6 @@
   roles:
     - common
     - influx
-    - mqtt
     - telegraf
     - grafana
     - home_assistant

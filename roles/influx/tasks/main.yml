@@ -56,9 +56,25 @@
         --name octopus 
         --org {{ influxdb_organization }}
         --token {{ influxdb_api_key }}
+  ignore_errors: true
   register: influx_bucket_check
 
 - name: Create bucket for octopus-influx
   command:
     cmd: influx bucket create --name octopus --token {{ influxdb_api_key }}
-  when: influx_bucket_check.stdout.startswith('Error')
+  when: influx_bucket_check is failed
+
+- name: Test for home assistant bucket
+  command:
+    cmd: >
+      influx bucket list
+        --name "Home Assistant"
+        --org {{ influxdb_organization }}
+        --token {{ influxdb_api_key }}
+  ignore_errors: true
+  register: influx_ha_bucket_check
+
+- name: Create bucket for octopus-influx
+  command:
+    cmd: influx bucket create --name "Home Assistant" --token {{ influxdb_api_key }}
+  when: influx_ha_bucket_check is failed

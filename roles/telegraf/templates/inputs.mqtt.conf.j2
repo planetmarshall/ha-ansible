@@ -1,0 +1,15 @@
+[[inputs.mqtt_consumer]]
+  servers = ["{{ emoncms_url }}:{{ emoncms_mqtt_port }}"]
+
+  topics = [
+    "emon/#"
+  ]
+  username = emonpi
+  password = emonpimqtt2016
+
+  # topic_tag = "topic"
+
+  ## If unset, a random client ID will be generated.
+  # client_id = ""
+
+  data_format = "influx"

@@ -6,3 +6,14 @@
       telegraf
   become: yes
 
+- name: Install Telegraf MQTT input plugin
+  template:
+    src: inputs.mqtt.conf.j2
+    dest: /etc/telegraf/telegraf.d/inputs.mqtt.conf
+  become: yes
+
+- name: Install Telegraf InfluxDB2 output plugin
+  template:
+    src: outputs.influxdb2.conf.j2
+    dest: /etc/telegraf/telegraf.d/outputs.influxdb2.conf
+  become: yes

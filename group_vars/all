@@ -1,6 +1,7 @@
 ---
 
 emoncms_url: http://emonpi.lan
+emoncms_mqtt_port: 1883
 influxdb_host: homeassistant.lan
 influxdb_port: 8086
 influxdb_url: http://{{ influxdb_host}}:{{ influxdb_port }}
