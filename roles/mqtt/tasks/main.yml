@@ -1,7 +1,0 @@
----
-
-- name: Install Mosquitto
-  apt:
-    pkg:
-      mosquitto
-  become: yes

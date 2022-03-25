@@ -1,17 +1,23 @@
 HomeAssistant Ansible
 =====================
 
-Ansible configuration for automating a Home Assistant setup
+Ansible configuration for automating a Home Assistant setup. Much
+of this is specific to my particular use case but others may 
+find it useful.
 
 Usage
 -----
 
-```
-ansible-playbook -i inventory.yml site.yml --extra-vars "influxdb_password=<my password>"
+Create a file called `auth.yml` with the following content:
+
+```yaml
+influxdb_password: <my password>
+octopus_api_key: <octopus energy API key>
+emoncms_api_key: <emoncms API key>
 ```
 
-Alternativel put the authentication variables in a local file with
+Run the playbook
 
 ```
-ansible-playbook -i inventory.yml site.yml --extra-vars @auth.yml
+$ ansible-playbook -i inventory.yml site.yml --extra-vars @auth.yml
 ```
