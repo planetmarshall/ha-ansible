@@ -1,0 +1,8 @@
+---
+
+- name: Install Telegraf
+  apt:
+    pkg:
+      telegraf
+  become: yes
+

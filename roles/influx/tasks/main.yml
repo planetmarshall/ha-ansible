@@ -1,26 +1,3 @@
-- name: Prerequisites
-  apt:
-    update_cache: yes
-    pkg:
-      gpg
-  become: true
-
-- name: Download InfluxDB Repository key
-  get_url:
-    url: https://repos.influxdata.com/influxdb.key
-    dest: /tmp/influxdb.key
-
-- name: Install InfluxDB Repository key
-  command: gpg --output /etc/apt/trusted.gpg.d/influxdb.gpg --dearmor /tmp/influxdb.key
-  args:
-    creates: /etc/apt/trusted.gpg.d/influxdb.gpg
-  become: yes
-
-- name: Add InfluxDB repository
-  apt_repository:
-    repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.gpg] https://repos.influxdata.com/debian bullseye stable
-  become: yes
-
 - name: Install InfluxDB
   apt:
     update_cache: yes
@@ -51,6 +28,15 @@
         --force
   when: influxdb_config.stdout | from_json | length == 0
 
+- name: Create an API Key
+  command:
+    cmd: influx auth create --all-access --json
+  register: influx_auth
+
+- name: Store API Key
+  set_fact:
+    influxdb_api_key: '{{ (influx_auth.stdout | from_json).token }}'
+
 - name: Install octopus-influx
   pip:
     name:
@@ -62,3 +48,17 @@
     src: octopus-influx.conf.j2
     dest: /etc/octopus-influx.conf
   become: yes
+
+- name: Test for octopus bucket
+  command:
+    cmd: >
+      influx bucket list 
+        --name octopus 
+        --org {{ influxdb_organization }}
+        --token {{ influxdb_api_key }}
+  register: influx_bucket_check
+
+- name: Create bucket for octopus-influx
+  command:
+    cmd: influx bucket create --name octopus --token {{ influxdb_api_key }}
+  when: influx_bucket_check.stdout.startswith('Error')

@@ -104,8 +104,8 @@
         ssl: {{ influxdb_ssl }}
         token: {{ influxdb_api_key }}
         organization: {{ influxdb_organization_code }}
-  exclude:
-    entity_globs: "*"
+        exclude:
+          entity_globs: "*"
   become: yes
   become_user: homeassistant
 
@@ -119,7 +119,8 @@
 - name: Include sensors file in Home Assistant config
   lineinfile:
     path: /home/homeassistant/.homeassistant/configuration.yaml
-    line: 'sensors: !include sensors.yaml'
-    regexp: '^sensors'
+    line: 'sensor: !include sensors.yaml'
+    regexp: '^sensor'
   become_user: homeassistant
   become: yes
+  notify: Restart home assistant

@@ -4,3 +4,9 @@
   command:
     cmd: systemctl --system daemon-reload
   become: yes
+
+- name: Restart home assistant
+  service:
+    name: home-assistant@homeassistant
+    state: restarted
+  become: yes
