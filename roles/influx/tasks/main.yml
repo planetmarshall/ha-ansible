@@ -50,3 +50,15 @@
         --retention 0
         --force
   when: influxdb_config.stdout | from_json | length == 0
+
+- name: Install octopus-influx
+  pip:
+    name:
+      - git+https://github.com/planetmarshall/octopus-influx
+  become: yes
+
+- name: Install octopus-influx config
+  template:
+    src: octopus-influx.conf.j2
+    dest: /etc/octopus-influx.conf
+  become: yes
