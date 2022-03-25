@@ -91,35 +91,35 @@
     state: started
   become: yes
 
-- name: Add Emonpi integration
-  blockinfile:
-    path: /home/homeassistant/.homeassistant/configuration.yaml
-    marker_begin: BEGIN_EMONPI
-    marker_end: END_EMONPI
-    block: |
-      sensor:
-      - platform: emoncms
-        api_key: {{ emoncms_api_key }}
-        url: {{ emoncms_url }}
-        id: 1
-  become_user: homeassistant
-  become: yes
-
 - name: Add influxdb integration
   blockinfile:
     path: /home/homeassistant/.homeassistant/configuration.yaml
     marker_begin: BEGIN_INFLUXDB
     marker_end: END_INFLUXDB
     block: |
-      sensor:
-      - platform: influxdb
-        api_key: {{ influxdb_api_key }}
-        organization: home
-        bucket: data
-        queries_flux:
-        - range_start: "-30m"
-          name: octopus_outgoing
-          query: >
-            filter(fn: (r) => r._measurement == "octopus_outgoing" and r._field == "value_inc_vat")
+      influxdb:
+        api_version: 2
+        host: {{ influxdb_host }}
+        port: {{ influxdb_port }}
+        ssl: {{ influxdb_ssl }}
+        token: {{ influxdb_api_key }}
+        organization: {{ influxdb_organization_code }}
+  exclude:
+    entity_globs: "*"
+  become: yes
+  become_user: homeassistant
+
+- name: Add custom sensors configuration file
+  template:
+    src: sensors.yaml.j2
+    dest: /home/homeassistant/.homeassistant/sensors.yaml
+  become: yes
+  become_user: homeassistant
+
+- name: Include sensors file in Home Assistant config
+  lineinfile:
+    path: /home/homeassistant/.homeassistant/configuration.yaml
+    line: 'sensors: !include sensors.yaml'
+    regexp: '^sensors'
   become_user: homeassistant
   become: yes

@@ -1,8 +1,8 @@
 [influx2]
-url=http://homeassistant.lan:8086
-org=home
-bucket=data
-token={{ influxfb_api_key }}
+url={{ influxdb_url }}
+org={{ influxdb_organization }}
+bucket=octopus
+token={{ influxdb_api_key }}
 
 [auth]
 octopus_api_key={{ octopus_api_key }}
