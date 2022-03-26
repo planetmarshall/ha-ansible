@@ -17,3 +17,16 @@
     src: outputs.influxdb2.conf.j2
     dest: /etc/telegraf/telegraf.d/outputs.influxdb2.conf
   become: yes
+
+- name: Remove the influx v1 config
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    line: "# [[outputs.influx]]"
+    regexp: '^\[\[outputs.influx\]\]'
+  become: yes
+
+- name: Start the telegraf service
+  service:
+    name: telegraf
+    state: restarted
+  become: yes

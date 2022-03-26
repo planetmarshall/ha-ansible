@@ -74,7 +74,29 @@
   ignore_errors: true
   register: influx_ha_bucket_check
 
-- name: Create bucket for octopus-influx
+- name: Create bucket for home assistant
   command:
     cmd: influx bucket create --name "Home Assistant" --token {{ influxdb_api_key }}
   when: influx_ha_bucket_check is failed
+
+- name: Test for telegraf bucket
+  command:
+    cmd: >
+      influx bucket list
+        --name telegraf
+        --org {{ influxdb_organization }}
+        --token {{ influxdb_api_key }}
+  ignore_errors: true
+  register: influx_telegraf_bucket_check
+
+- name: Create bucket for telegraf
+  command:
+    cmd: influx bucket create --name telegraf --token {{ influxdb_api_key }}
+  when: influx_telegraf_bucket_check is failed
+
+- name: Retrieve octopus tariff data daily
+  cron:
+    name: "get octopus tariff data"
+    minute: "15"
+    hour: "20"
+    job: "octopus-influx"

@@ -1,6 +1,6 @@
 # Configuration for sending metrics to InfluxDB
 [[outputs.influxdb_v2]]
    urls = ["{{ influxdb_url }}"]
-   token = "{{ influxdb_api_token }}"
+   token = "{{ influxdb_api_key }}"
    organization = "{{ influxdb_organization }}"
    bucket = "telegraf"

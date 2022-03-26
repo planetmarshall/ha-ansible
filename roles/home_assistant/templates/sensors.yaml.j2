@@ -5,13 +5,13 @@
   ssl: {{ influxdb_ssl }}
   token: {{ influxdb_api_key }}
   organization: {{ influxdb_organization_code }}
+  bucket: octopus
   queries_flux:
   - range_start: "-30m"
     name: octopus_outgoing
     unit_of_measurement: "£/kWh"
     query: |
-      from(bucket: "octopus")
-      |> filter(fn: (r) => r._measurement == "octopus_outgoing" and r._field == "value_inc_vat")
+      filter(fn: (r) => r._measurement == "octopus_outgoing" and r._field == "value_inc_vat")
 
 - platform: emoncms
   api_key: {{ emoncms_api_key }}
