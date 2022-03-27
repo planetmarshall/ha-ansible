@@ -13,6 +13,27 @@
     query: |
       filter(fn: (r) => r._measurement == "octopus_outgoing" and r._field == "value_inc_vat")
 
+- platform: influxdb
+  api_version: 2
+  host: {{ influxdb_host }}
+  port: {{ influxdb_port }}
+  ssl: {{ influxdb_ssl }}
+  token: {{ influxdb_api_key }}
+  organization: {{ influxdb_organization_code }}
+  bucket: telegraf
+  queries_flux:
+  - range_start: "today()""
+    name: import_cost
+    unit_of_measurement: "£"
+    query: |
+        filter(fn: (r) => r["_measurement"] == "mqtt_consumer" and
+        r["_field"] == "value" and
+        r["host"] == "homeassistant" and
+        r["topic"] == "emon/power/import")
+        |> integral(unit: 1h)
+        |> map(fn: (r) => ({_value: r._value * 0.1995 + 0.2438}))
+
+
 - platform: emoncms
   api_key: {{ emoncms_api_key }}
   url: {{ emoncms_url }}
