@@ -14,6 +14,13 @@
     pkg: grafana
   become: yes
 
+- name: Enable anonymous access
+  .lineinfile:
+    path: /etc/grafana/grafana.ini
+    insert_after: '^# enable anonymous access'
+    line: 'enabled = false'
+  become: yes
+
 - name: Start the grafana service ad enabe autostart
   service:
     name: grafana-server
