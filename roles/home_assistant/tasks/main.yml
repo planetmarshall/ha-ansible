@@ -84,43 +84,30 @@
   notify: Reload systemd
   become: yes
 
+- name: Add sensors file
+  template:
+    src: sensors.yaml.j2
+    dest: /home/homeassistant/.homeassistant/sensors.yaml
+  owner: homeassistant
+  become: yes
+
+- name: Add customizations file
+  template:
+    src: customizations.yaml.j2
+    dest: /home/homeassistant/.homeassistant/customizations.yaml
+  owner: homeassistant
+  become: yes
+
+- name: Add configuration file
+  template:
+    src: configuration.yaml.j2
+    dest: /home/homeassistant/.homeassistant/configuration.yaml
+  owner: homeassistant
+  become: yes
+
 - name: Enable and start Home Assistant
   service:
     name: home-assistant@homeassistant
     enabled: yes
-    state: started
+    state: restarted
   become: yes
-
-- name: Add influxdb integration
-  blockinfile:
-    path: /home/homeassistant/.homeassistant/configuration.yaml
-    marker_begin: BEGIN_INFLUXDB
-    marker_end: END_INFLUXDB
-    block: |
-      influxdb:
-        api_version: 2
-        host: {{ influxdb_host }}
-        port: {{ influxdb_port }}
-        ssl: {{ influxdb_ssl }}
-        token: {{ influxdb_api_key }}
-        organization: {{ influxdb_organization_code }}
-        exclude:
-          entity_globs: "*"
-  become: yes
-  become_user: homeassistant
-
-- name: Add custom sensors configuration file
-  template:
-    src: sensors.yaml.j2
-    dest: /home/homeassistant/.homeassistant/sensors.yaml
-  become: yes
-  become_user: homeassistant
-
-- name: Include sensors file in Home Assistant config
-  lineinfile:
-    path: /home/homeassistant/.homeassistant/configuration.yaml
-    line: 'sensor: !include sensors.yaml'
-    regexp: '^sensor'
-  become_user: homeassistant
-  become: yes
-  notify: Restart home assistant
