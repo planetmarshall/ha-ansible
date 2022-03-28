@@ -32,7 +32,7 @@
         r["host"] == "homeassistant" and
         r["topic"] == "emon/power/import")
         |> integral(unit: 1h)
-        |> map(fn: (r) => ({_value: r._value * 0.001 * 0.1995 + 0.2438}))
+        |> map(fn: (r) => ({_value: r._value * 0.001 * 0.1995 + 0.2438, _time: r._stop}))
 
 - platform: emoncms
   api_key: {{ emoncms_api_key }}
