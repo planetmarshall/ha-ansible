@@ -96,7 +96,10 @@
 
 - name: Retrieve octopus tariff data daily
   cron:
-    name: "get octopus tariff data"
+    cron_file: octopus_influx
+    name: octopus_influx
     minute: "15"
     hour: "20"
     job: "octopus-influx"
+    user: root
+  become: yes
