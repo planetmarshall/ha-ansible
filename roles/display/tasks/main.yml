@@ -1,0 +1,15 @@
+---
+
+- name: Login as homeassistant by default
+  lineinfile:
+    line: "autologin-user: homeassistant"
+    regexp: "^autologin-user:"
+    path: /etc/lightdm/lightdm.conf
+  become: yes
+
+- name: Create autostart file
+  template:
+    src: autostart.j2
+    dest: /home/homeassistant/.config/openbox/autostart
+  owner: homeassistant
+  become: yes

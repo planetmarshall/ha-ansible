@@ -21,7 +21,7 @@
     line: 'enabled = false'
   become: yes
 
-- name: Start the grafana service ad enabe autostart
+- name: Start the grafana service ad enable autostart
   service:
     name: grafana-server
     state: restarted

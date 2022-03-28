@@ -3,7 +3,10 @@
 emoncms_host: emonpi.lan
 emoncms_url: http://{{ emoncms_host }}
 emoncms_mqtt_port: 1883
-influxdb_host: homeassistant.lan
+ha_host: homeassistant.lan
+ha_url: http://{{ ha_host }}:8123
+grafana_url: http://{{ ha_host }}:3000
+influxdb_host: {{ ha_host }}
 influxdb_port: 8086
 influxdb_url: http://{{ influxdb_host}}:{{ influxdb_port }}
 influxdb_ssl: false
