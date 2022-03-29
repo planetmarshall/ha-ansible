@@ -13,3 +13,47 @@
     dest: /home/homeassistant/.config/openbox/autostart
   owner: homeassistant
   become: yes
+
+- name: Download an extract heliocron
+  unarchive:
+    src: https://github.com/mfreeborn/heliocron/releases/download/v0.5.0/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Install heliocron
+  copy:
+    src: /tmp/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf/heliocron
+    dest: /usr/local/bin
+  become: yes
+
+- name: Install sleep script
+  template:
+    src: sleep.sh.j2
+    dest: /home/homeassistant/scripts/sleep.sh
+    mode: '0755'
+  owner: homeassistant
+  become: yes
+
+- name: Install wake script
+  template:
+    src: wake.sh.j2
+    dest: /home/homeassistant/scripts/wake.sh
+    mode: '0755'
+  owner: homeassistant
+  become: yes
+
+- name: Sleep after sunset
+  cron:
+    hour: "15"
+    user: homeassistant
+    job: heliocron wait --event sunset --offset 00:30 && ~/scripts/sleep.sh
+    cron_file: homeassistant
+  become: yes
+
+- name: Wake before sunrise
+  cron:
+    hour: "4"
+    user: homeassistant
+    job: heliocron wait --event sunrise --offset -00:30 && ~/scripts/wake.sh
+    cron_file: homeassistant
+  become: yes
