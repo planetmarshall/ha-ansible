@@ -15,11 +15,17 @@
   become: yes
 
 - name: Enable anonymous access
-  .lineinfile:
+  lineinfile:
     path: /etc/grafana/grafana.ini
     insert_after: '^# enable anonymous access'
     line: 'enabled = false'
   become: yes
+
+- name: Add homeassistant to the grafana group
+  user:
+    name: homeassistant
+    groups: grafana
+    append: yes
 
 - name: Start the grafana service ad enable autostart
   service:
