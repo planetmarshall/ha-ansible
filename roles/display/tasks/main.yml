@@ -14,7 +14,7 @@
   owner: homeassistant
   become: yes
 
-- name: Download an extract heliocron
+- name: Download and extract heliocron
   unarchive:
     src: https://github.com/mfreeborn/heliocron/releases/download/v0.5.0/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf.tar.gz
     dest: /tmp
@@ -57,3 +57,9 @@
     job: heliocron wait --event sunrise --offset -00:30 && ~/scripts/wake.sh
     cron_file: homeassistant
   become: yes
+
+- name: Rotate the LCD
+  lineinfile:
+    path: /boot/config.txt
+    line: lcd_rotate=2
+    regexp: ^[#]{0,1}lcd_rotate
