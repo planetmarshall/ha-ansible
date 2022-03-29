@@ -101,5 +101,5 @@
     minute: "15"
     hour: "20"
     job: "octopus-influx"
-    user: root
+    user: homeassistant
   become: yes

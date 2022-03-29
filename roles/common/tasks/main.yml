@@ -31,3 +31,33 @@
   apt_repository:
     repo: deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.gpg] https://repos.influxdata.com/debian bullseye stable
   become: yes
+
+- name: Add dialout group
+  group:
+    name: dialout
+
+- name: Add gpio group
+  group:
+    name: gpio
+
+- name: Add i2c group
+  group:
+    name: i2c
+
+- name: Add homeassistant account
+  user:
+    name: homeassistant
+    comment: Home Assistant user
+    groups: dialout,gpio,i2c
+    create_home: yes
+    system: yes
+    append: yes
+  become: yes
+
+- name: Install SSH Key for homeassistant account
+  authorized_key:
+    user: homeassistant
+    state: present
+    key: "{{ lookup('file', '/home/andrew/.ssh/id_ed25519.pub') }}"
+  become_user: homeassistant
+  become: yes
