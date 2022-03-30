@@ -58,21 +58,42 @@
   template:
     src: sensors.yaml.j2
     dest: /home/homeassistant/.homeassistant/sensors.yaml
-  owner: homeassistant
+    owner: homeassistant
+  become: yes
+
+- name: Add automations file
+  template:
+    src: automations.yaml.j2
+    dest: /home/homeassistant/.homeassistant/automations.yaml
+    owner: homeassistant
+  become: yes
+
+- name: Add scripts file
+  template:
+    src: scripts.yaml.j2
+    dest: /home/homeassistant/.homeassistant/scripts.yaml
+    owner: homeassistant
+  become: yes
+
+- name: Add scenes file
+  template:
+    src: scenes.yaml.j2
+    dest: /home/homeassistant/.homeassistant/scenes.yaml
+    owner: homeassistant
   become: yes
 
 - name: Add customizations file
   template:
     src: customizations.yaml.j2
     dest: /home/homeassistant/.homeassistant/customizations.yaml
-  owner: homeassistant
+    owner: homeassistant
   become: yes
 
 - name: Add configuration file
   template:
     src: configuration.yaml.j2
     dest: /home/homeassistant/.homeassistant/configuration.yaml
-  owner: homeassistant
+    owner: homeassistant
   become: yes
 
 - name: Enable and start Home Assistant

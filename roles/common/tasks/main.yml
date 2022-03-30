@@ -48,8 +48,9 @@
   user:
     name: homeassistant
     comment: Home Assistant user
-    groups: dialout,gpio,i2c
+    groups: dialout,gpio,i2c,sudo
     create_home: yes
+    password: "{{ password }}"
     system: yes
     append: yes
   become: yes

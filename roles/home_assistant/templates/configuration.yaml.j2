@@ -13,7 +13,7 @@ influxdb:
   host: {{ influxdb_host }}
   port: {{ influxdb_port }}
   ssl: {{ influxdb_ssl }}
-  token: {{ influxdb_api_key }}
+  token: {{ influxdb_api_read_key }}
   organization: {{ influxdb_organization_code }}
   exclude:
     entity_globs: "*"
@@ -21,4 +21,13 @@ influxdb:
 sensor: !include sensors.yaml
 
 homeassistant:
+  name: Home
+  latitude: {{ home_lat }}
+  longitude: {{ home_lon }}
+  elevation: {{ home_alt }}
+  unit_system: {{ units }}
+  currency: {{ currency }}
+  time_zone: {{ time_zone }}
+  external_url: {{ ha_url }}
+  internal_url: {{ ha_url }}
   customize: !include customizations.yaml

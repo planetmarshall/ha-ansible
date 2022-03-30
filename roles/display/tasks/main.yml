@@ -2,16 +2,24 @@
 
 - name: Login as homeassistant by default
   lineinfile:
-    line: "autologin-user: homeassistant"
-    regexp: "^autologin-user:"
+    line: "autologin-user=homeassistant"
+    regexp: "^autologin-user"
     path: /etc/lightdm/lightdm.conf
+  become: yes
+
+- name: Create autostart config directory
+  file:
+    path: /home/homeassistant/.config/lxsession/LXDE-pi
+    state: directory
+    mode: '0755'
+    owner: homeassistant
   become: yes
 
 - name: Create autostart file
   template:
     src: autostart.j2
-    dest: /home/homeassistant/.config/openbox/autostart
-  owner: homeassistant
+    dest: /home/homeassistant/.config/lxsession/LXDE-pi/autostart
+    owner: homeassistant
   become: yes
 
 - name: Download and extract heliocron
@@ -24,6 +32,16 @@
   copy:
     src: /tmp/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf/heliocron
     dest: /usr/local/bin
+    mode: '0755'
+    remote_src: yes
+  become: yes
+
+- name: Create scripts directory
+  file:
+    path: /home/homeassistant/scripts
+    state: directory
+    mode: '0755'
+    owner: homeassistant
   become: yes
 
 - name: Install sleep script
@@ -31,7 +49,7 @@
     src: sleep.sh.j2
     dest: /home/homeassistant/scripts/sleep.sh
     mode: '0755'
-  owner: homeassistant
+    owner: homeassistant
   become: yes
 
 - name: Install wake script
@@ -39,11 +57,12 @@
     src: wake.sh.j2
     dest: /home/homeassistant/scripts/wake.sh
     mode: '0755'
-  owner: homeassistant
+    owner: homeassistant
   become: yes
 
 - name: Sleep after sunset
   cron:
+    name: sunset_sleep_display
     hour: "15"
     user: homeassistant
     job: heliocron wait --event sunset --offset 00:30 && ~/scripts/sleep.sh
@@ -52,14 +71,9 @@
 
 - name: Wake before sunrise
   cron:
+    name: sunrise_wake_display
     hour: "4"
     user: homeassistant
     job: heliocron wait --event sunrise --offset -00:30 && ~/scripts/wake.sh
     cron_file: homeassistant
   become: yes
-
-- name: Rotate the LCD
-  lineinfile:
-    path: /boot/config.txt
-    line: lcd_rotate=2
-    regexp: ^[#]{0,1}lcd_rotate

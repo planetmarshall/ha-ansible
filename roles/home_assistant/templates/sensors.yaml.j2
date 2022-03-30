@@ -3,7 +3,7 @@
   host: {{ influxdb_host }}
   port: {{ influxdb_port }}
   ssl: {{ influxdb_ssl }}
-  token: {{ influxdb_api_key }}
+  token: {{ influxdb_api_read_key }}
   organization: {{ influxdb_organization_code }}
   bucket: octopus
   queries_flux:
@@ -18,7 +18,7 @@
   host: {{ influxdb_host }}
   port: {{ influxdb_port }}
   ssl: {{ influxdb_ssl }}
-  token: {{ influxdb_api_key }}
+  token: {{ influxdb_api_read_key }}
   organization: {{ influxdb_organization_code }}
   bucket: telegraf
   queries_flux:

@@ -1,17 +1,10 @@
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+@xscreensaver -no-splash
+
 xset s off
 xset s noblank
 xset -dpms
 
 setxkbmap -option terminate:ctrl_alt_bksp
-chromium-browser \
-  #--start-fullscreen \
-  #--kiosk \
-  --incognito \
-  #--noerrdialogs \
-  --no-first-run \
-  #--fast \
-  #--fast-start \
-  #--disable-infobars \
-  #--disable-pinch \
-  {{ ha_url }} \
-  {{ grafana_url }}
+@chromium-browser --kiosk --incognito {{ grafana_url }}

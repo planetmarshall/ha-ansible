@@ -28,14 +28,23 @@
         --force
   when: influxdb_config.stdout | from_json | length == 0
 
-- name: Create an API Key
+- name: Create full access API Key
   command:
-    cmd: influx auth create --read-buckets --json
+    cmd: influx auth create --all-access --json
   register: influx_auth
 
 - name: Store API Key
   set_fact:
     influxdb_api_key: '{{ (influx_auth.stdout | from_json).token }}'
+
+- name: Create read-only API Key
+  command:
+    cmd: influx auth create --read-buckets --json
+  register: influx_auth_read
+
+- name: Store API (Read-only) Key
+  set_fact:
+    influxdb_api_read_key: '{{ (influx_auth_read.stdout | from_json).token }}'
 
 - name: Install octopus-influx
   pip:
