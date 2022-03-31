@@ -28,23 +28,32 @@
         --force
   when: influxdb_config.stdout | from_json | length == 0
 
-- name: Create full access API Key
+- name: Create write key
   command:
-    cmd: influx auth create --all-access --json
-  register: influx_auth
+    cmd: influx auth create --write-buckets --read-buckets --json
+  register: influx_write_json
 
 - name: Store API Key
   set_fact:
-    influxdb_api_key: '{{ (influx_auth.stdout | from_json).token }}'
+    influxdb_api_write_key: '{{ (influx_write_json.stdout | from_json).token }}'
 
 - name: Create read-only API Key
   command:
     cmd: influx auth create --read-buckets --json
-  register: influx_auth_read
+  register: influx_read_json
 
 - name: Store API (Read-only) Key
   set_fact:
-    influxdb_api_read_key: '{{ (influx_auth_read.stdout | from_json).token }}'
+    influxdb_api_read_key: '{{ (influx_read_json.stdout | from_json).token }}'
+
+- name: Get organization code
+  command:
+    cmd: influx org list --json
+  register: influx_org_json
+
+- name: Store organization code
+  set_fact:
+    influxdb_organization_code: '{{ (influx_org_json.stdout | from_json)[0].id }}'
 
 - name: Install octopus-influx
   pip:
@@ -64,13 +73,12 @@
       influx bucket list 
         --name octopus 
         --org {{ influxdb_organization }}
-        --token {{ influxdb_api_key }}
   ignore_errors: true
   register: influx_bucket_check
 
 - name: Create bucket for octopus-influx
   command:
-    cmd: influx bucket create --name octopus --token {{ influxdb_api_key }}
+    cmd: influx bucket create --name octopus
   when: influx_bucket_check is failed
 
 - name: Test for home assistant bucket
@@ -79,13 +87,12 @@
       influx bucket list
         --name "Home Assistant"
         --org {{ influxdb_organization }}
-        --token {{ influxdb_api_key }}
   ignore_errors: true
   register: influx_ha_bucket_check
 
 - name: Create bucket for home assistant
   command:
-    cmd: influx bucket create --name "Home Assistant" --token {{ influxdb_api_key }}
+    cmd: influx bucket create --name "Home Assistant"
   when: influx_ha_bucket_check is failed
 
 - name: Test for telegraf bucket
@@ -94,13 +101,12 @@
       influx bucket list
         --name telegraf
         --org {{ influxdb_organization }}
-        --token {{ influxdb_api_key }}
   ignore_errors: true
   register: influx_telegraf_bucket_check
 
 - name: Create bucket for telegraf
   command:
-    cmd: influx bucket create --name telegraf --token {{ influxdb_api_key }}
+    cmd: influx bucket create --name telegraf
   when: influx_telegraf_bucket_check is failed
 
 - name: Retrieve octopus tariff data daily

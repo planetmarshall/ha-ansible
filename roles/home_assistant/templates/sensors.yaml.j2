@@ -25,7 +25,6 @@
   - range_start: "today()"
     name: import_cost
     unit_of_measurement: "GBP"
-    device_class: monetary
     query: |
         filter(fn: (r) => r["_measurement"] == "mqtt_consumer" and
         r["_field"] == "value" and

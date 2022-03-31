@@ -13,7 +13,7 @@ influxdb:
   host: {{ influxdb_host }}
   port: {{ influxdb_port }}
   ssl: {{ influxdb_ssl }}
-  token: {{ influxdb_api_read_key }}
+  token: {{ influxdb_api_write_key }}
   organization: {{ influxdb_organization_code }}
   exclude:
     entity_globs: "*"
