@@ -22,19 +22,28 @@
     owner: homeassistant
   become: yes
 
-- name: Download and extract heliocron
-  unarchive:
-    src: https://github.com/mfreeborn/heliocron/releases/download/v0.5.0/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf.tar.gz
-    dest: /tmp
-    remote_src: yes
+- name: Install cargo
+  apt:
+    pkg:
+     - cargo
+  become: yes
 
 - name: Install heliocron
-  copy:
-    src: /tmp/heliocron-v0.5.0-armv7-unknown-linux-gnueabihf/heliocron
-    dest: /usr/local/bin
-    mode: '0755'
-    remote_src: yes
+  command:
+    cmd: cargo install heliocron
   become: yes
+
+- name: Install heliocron config
+  template:
+    src: sleep.sh.j2
+    dest: /home/homeassistant/.config/heliocron.toml
+    mode: '0755'
+    owner: homeassistant
+  become: yes
+
+- name: Test heliocron install
+  command:
+    cmd: heliocron --version
 
 - name: Create scripts directory
   file:
