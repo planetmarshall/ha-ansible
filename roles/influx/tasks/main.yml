@@ -115,6 +115,6 @@
     name: octopus_influx
     minute: "15"
     hour: "20"
-    job: "octopus-influx"
+    job: /usr/local/bin/octopus-influx
     user: homeassistant
   become: yes

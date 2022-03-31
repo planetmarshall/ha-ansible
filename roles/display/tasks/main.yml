@@ -30,12 +30,12 @@
 
 - name: Install heliocron
   command:
-    cmd: cargo install heliocron
+    cmd: cargo install --root /usr/local/bin heliocron
   become: yes
 
 - name: Install heliocron config
   template:
-    src: sleep.sh.j2
+    src: heliocron.toml.j2
     dest: /home/homeassistant/.config/heliocron.toml
     mode: '0755'
     owner: homeassistant
@@ -74,7 +74,7 @@
     name: sunset_sleep_display
     hour: "15"
     user: homeassistant
-    job: heliocron wait --event sunset --offset 00:30 && ~/scripts/sleep.sh
+    job: /usr/local/bin/heliocron wait --event sunset --offset 00:30 && ~/scripts/sleep.sh
     cron_file: homeassistant
   become: yes
 
@@ -83,6 +83,6 @@
     name: sunrise_wake_display
     hour: "4"
     user: homeassistant
-    job: heliocron wait --event sunrise --offset -00:30 && ~/scripts/wake.sh
+    job: /usr/local/bin/heliocron wait --event sunrise --offset -00:30 && ~/scripts/wake.sh
     cron_file: homeassistant
   become: yes
