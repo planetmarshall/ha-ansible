@@ -1,0 +1,4 @@
+ha_displays:
+  hosts:
+    touchscreen_7:
+      ansible_host: ha-touchscreen-7

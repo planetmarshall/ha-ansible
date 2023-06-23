@@ -1,0 +1,55 @@
+- name: Install HA Touchscreen
+  hosts: ha_displays
+  become: true
+  tasks:
+    - name: set boot configuration
+      template:
+        src: config.txt
+        dest: /boot/config.txt
+        owner: root
+        mode: '0644'
+
+    - name: rotate touchscreen display for VC4 driver
+      lineinfile:
+        path: /boot/cmdline.txt
+        backrefs: yes
+        regexp: "^(.*rootwait)$"
+        line: '\1 video=DSI-1:800x480@60,rotate=180'
+
+    - name: update packages
+      apt:
+        update_cache: true
+        upgrade: safe
+
+    - name: configure automatic login
+      template:
+        src: autologin.conf
+        dest: /etc/systemd/system/getty@tty1.service.d/autologin.conf
+        owner: root
+        mode: '0644'
+
+    - name: install packages
+      apt:
+        name:
+          - firefox-esr
+          - sway
+        state: present
+
+    - name: configure bash startup script
+      template:
+        src: profile
+        dest: /home/andrew/.profile
+        mode: '0644'
+
+    - name: Create sway config directory
+      file:
+        path: /home/andrew/.config/sway
+        state: directory
+        owner: andrew
+        mode: '0755'
+
+    - name: configure sway
+      template:
+        src: sway_config
+        dest: /home/andrew/.config/sway/config
+        mode: '0644'
